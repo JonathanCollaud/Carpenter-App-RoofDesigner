@@ -16,9 +16,9 @@ void derivatives(double **x,double *gradF,int xLength, Constraint * cons, int co
 
     for(int i=0;i<consLength;i++)
     {
-        ////////////////////////////////////////
-        //Point on Point Constraint derivative//
-        ////////////////////////////////////////
+        //////////////////////////////////////
+        //Point on Point Constraint derivative
+        //////////////////////////////////////
         if((cons[i]).type==pointOnPoint)
         {
             // Derivative with respect to p1x
@@ -49,13 +49,13 @@ void derivatives(double **x,double *gradF,int xLength, Constraint * cons, int co
                 gradF[position] += -2 * (P1_y - P2_y);
                 }
         }
-        //........................................//
-        //End Point On Point Constraint derivative//
-        //........................................//
+        //.........................................
+        // End Point On Point Constraint derivative
+        //.........................................
 
-        /////////////////////////////////////////////////
-        //Point to Point Distance Constraint derivative//
-        /////////////////////////////////////////////////
+        //////////////////////////////////////
+        //Point to Point Distance Constraint derivative
+        //////////////////////////////////////
         if((cons[i]).type==P2PDistance)
         {
             // Derivative with respect to p1x
@@ -78,13 +78,13 @@ void derivatives(double **x,double *gradF,int xLength, Constraint * cons, int co
             position = &sketchSolveDistance - x[0];
             if(position >=0 & position<xLength) gradF[position] += -2 * sketchSolveDistance;
         }
-        //.................................................//
-        //End Point to Point distance Constraint derivative//
-        //.................................................//
+        //..................................................
+        // End Point to Point distance Constraint derivative
+        //..................................................
 
-        //////////////////////////////////////////////////////
-        //Point to Point Distance Vert Constraint derivative//
-        //////////////////////////////////////////////////////
+        //////////////////////////////////////
+        //Point to Point Distance Vert Constraint derivative
+        //////////////////////////////////////
         if((cons[i]).type==P2PDistance)
         {
 
@@ -100,9 +100,9 @@ void derivatives(double **x,double *gradF,int xLength, Constraint * cons, int co
             position = &sketchSolveDistance - x[0];
             if(position >=0 & position<xLength) gradF[position] += -2 * sketchSolveDistance;
         }
-        //......................................................//
-        //End Point to Point Vert distance Constraint derivative//
-        //......................................................//
+        //........................................................
+        // End Point to Point Vert distance Constraint derivative
+        //........................................................
 
         //////////////////////////////////////
         //Point to Point Horz Distance Constraint derivative
@@ -121,13 +121,13 @@ void derivatives(double **x,double *gradF,int xLength, Constraint * cons, int co
             position = &sketchSolveDistance - x[0];
             if(position >=0 & position<xLength) gradF[position] += -2 * sketchSolveDistance;
         }
-        //......................................................//
-        //End Point to Point Horz distance Constraint derivative//
-        //......................................................//
+        //.......................................................
+        // End Point to Point Horz distance Constraint derivative
+        //.......................................................
 
-        ////////////////////////////////////////
-        //Point on line Constraint derivatives//
-        ////////////////////////////////////////
+        //////////////////////////////////////
+        //Point on line Constraint derivatives
+        //////////////////////////////////////
         if((cons[i]).type==pointOnLine)
         {
             // Derivative with respect to p1x
@@ -142,9 +142,9 @@ void derivatives(double **x,double *gradF,int xLength, Constraint * cons, int co
             position = &sketchSolveDistance - x[0];
             if(position >=0 & position<xLength) gradF[position] += -2 * sketchSolveDistance;
         }
-        //........................................//
-        //End Point on line Constraint derivatives//
-        //........................................//
+        //.......................................................
+        // End Point to Point Horz distance Constraint derivative
+        //.......................................................
 
 
     }
