@@ -15,19 +15,20 @@ Item {
 
     property var _;
     property var history: [];
+    property var undoneActions: [];
 
     property var store: {
         'points': [],
         'lines': [],
         'constraints': [],
         'scale': {
-            'set': false,
-            'mmPerPixel': 0.0
+            'set': true,
+            'mmPerPixel': 50.0
         },
         'background' : {
-            'set': false,
-            'url': Settings.captureImagePath
-        }
+            'set': true,
+            'url': Settings.defaultCaptureImagePath
+        },
     };
 
 
@@ -49,12 +50,19 @@ Item {
         console.log(_.assign)
     }
 
+    /*onLineUpdated: {
+        var line = mouseArea.lines[identifier]
+
+        if(line.intermediatePoint) {
+            line.intermediatePoint.line = newLine
+        }
+    }*/
+
+
     /*
      * Events
      */
     signal addPoint(vector2d position)
-    signal pointInserted(vector2d point, real identifier)
-
     onAddPoint: {
         updateStore(addPointReducer(store, position))
     }
@@ -63,17 +71,19 @@ Item {
         if(pointExists(position)) {
             console.error("Point already in sketch",  position);
             return store;
-        }
-        else {
+        } else {
             var newPoint = createPoint(position);
             pointInserted(position, newPoint.identifier);
             return _.assign({}, store, { 'points': [].concat(store.points, [newPoint]) });
         }
     }
 
-    signal removePoint(real identifier)
-    signal pointRemoved(real identifier)
+    signal pointInserted(vector2d point, real identifier)
+    onPointInserted: {
+        mouseArea.points[identifier] = mouseArea.createPointUi(point, identifier);
+    }
 
+    signal removePoint(real identifier)
     onRemovePoint: {
         updateStore(removePointReducer(store, identifier))
     }
@@ -89,14 +99,45 @@ Item {
         }
     }
 
-    signal movePoint(real identifier, vector2d to)
-    signal movePoints(var pointsToMove)
-    signal pointMoved(real identifier, vector2d to)
+    signal pointRemoved(real identifier)
+    onPointRemoved: {
+        console.log("pointRemoved(id: ", identifier, ")")
+        mouseArea.points[identifier].destroy();
+        mouseArea.points = _.omit(mouseArea.points, identifier)
+    }
 
+    signal movePoint(real identifier, vector2d to)
     onMovePoint: {
         updateStore(movePointReducer(store, identifier, to))
     }
 
+    function movePointReducer(store, id, to) {
+        if(!pointExistsById(id, store)) {
+            console.error("Point doesn't exist in sketch")
+            return store;
+        }
+        else {
+            var oldPoint = _.find(store.points, function(point) { return point.identifier === id });
+            var indexOfPoint = this.indexOfPoint(store, id);
+
+            if(indexOfPoint === -1) {
+                console.error("Point not in the sketch")
+                return store;
+            }
+            else {
+                var newPoint = createPoint(to, id, store)
+                var newPoints = updateItemInCollection(store.points, indexOfPoint, newPoint);
+                pointMoved(id, to)
+
+                // we should update the line too
+                var newStore = updatePointInLines(store, id, newPoint)
+
+                return _.assign({}, newStore, { 'points': newPoints });
+            }
+        }
+    }
+
+    signal movePoints(var pointsToMove)
     onMovePoints: {
         console.log("constrained", store.lines.filter(function(x) { return x.verticallyConstrained || x.horizontallyConstrained; }))
 
@@ -154,43 +195,16 @@ Item {
         updateStore(newStore);
     }
 
-    function movePointReducer(store, id, to) {
-        if(!pointExistsById(id, store)) {
-            console.error("Point doesn't exist in sketch")
-            return store;
-        }
-        else {
-            var oldPoint = _.find(store.points, function(point) { return point.identifier === id });
-            var indexOfPoint = this.indexOfPoint(store, id);
-
-            if(indexOfPoint === -1) {
-                console.error("Point not in the setch")
-                return store;
-            }
-            else {
-                var newPoint = createPoint(to, id, store)
-                var newPoints = updateItemInCollection(store.points, indexOfPoint, newPoint);
-                pointMoved(id, to)
-
-                // we should update the line too
-                var newStore = updatePointInLines(store, id, newPoint)
-
-                return _.assign({}, newStore, { 'points': newPoints });
-            }
-        }
+    signal pointMoved(real identifier, vector2d to)
+    onPointMoved: {
+        var pointUi = mouseArea.points[identifier]
+        pointUi.setStart(to)
     }
 
     // Line related
     signal addLine(real idStart, real idEnd)
-    signal addLineAndPoints(vector2d start, vector2d end)
-    signal lineAdded(Line line)
-
     onAddLine: {
         updateStore(addLineReducer(store, idStart, idEnd))
-    }
-
-    onAddLineAndPoints: {
-        updateStore(addLineAndPointsReducer(store, start, end))
     }
 
     function addLineReducer(store, idStart, idEnd) {
@@ -221,6 +235,16 @@ Item {
         }
     }
 
+    signal lineAdded(Line line)
+    onLineAdded: {
+        mouseArea.lines[line.identifier] = mouseArea.createLineUi(line)
+    }
+
+    signal addLineAndPoints(vector2d start, vector2d end)
+    onAddLineAndPoints: {
+        updateStore(addLineAndPointsReducer(store, start, end))
+    }
+
     function addLineAndPointsReducer(store, start, end) {
         var newStore = addPointReducer(store, start);
 
@@ -236,8 +260,6 @@ Item {
     }
 
     signal removeLine(real identifier)
-    signal lineRemoved(real identifier)
-
     onRemoveLine: {
         updateStore(removePointReducer(store, identifier))
     }
@@ -253,8 +275,14 @@ Item {
         }
     }
 
-    signal insertIntermediatePoint(Line line)
+    signal lineRemoved(real identifier)
+    onLineRemoved: {
+        console.log("lineRemoved(id: ", identifier, ")")
+        mouseArea.lines[identifier.toString()].destroy()
+        mouseArea.lines = _.omit(mouseArea.lines, identifier.toString())
+    }
 
+    signal insertIntermediatePoint(Line line)
     onInsertIntermediatePoint: {
         // compute intermediatePoint
         var intermediatePoint = line.computeIntermediatePoint();
@@ -275,7 +303,6 @@ Item {
     }
 
     signal mergeTwoPoint(Point thisOne, Point withThis)
-
     onMergeTwoPoint: {
         updateStore(mergeTwoPointReducer(store, thisOne, withThis))
     }
@@ -321,8 +348,9 @@ Item {
     }
 
     signal setInitialScale(real line, real mmLength)
-
     onSetInitialScale: {
+        helpTip.text = "Then you can set the distance for each line"
+        lineContextMenu.widthEdit.placeholderText = "Line length"
         console.log("received setInitialScale(", line, mmLength, ")")
         updateStore(_.assign({}, store, { 'scale' : { 'set': true, 'mmPerPixel': mmLength / line } }))
     }
@@ -341,21 +369,18 @@ Item {
     }
 
     signal verticallyConstrainLine(real identifier, bool constrain)
-
     onVerticallyConstrainLine: {
         var index = indexOfLine(store, identifier);
         store.lines[index].verticallyConstrained = constrain;
     }
 
     signal horizontallyConstrainLine(real identifier, bool constrain)
-
     onHorizontallyConstrainLine: {
         var index = indexOfLine(store, identifier);
         store.lines[index].horizontallyConstrained = constrain;
     }
 
     signal setDesiredDistance(real identifier, real desiredLength)
-
     onSetDesiredDistance: {
         var index = indexOfLine(store, identifier);
         store.lines[index].distanceFixed = true;
@@ -363,7 +388,6 @@ Item {
     }
 
     signal removeAtPosition(vector2d position);
-
     onRemoveAtPosition: {
         var replaceItemByIdentifier = function(figureType) {
             return function(x) {
@@ -375,17 +399,18 @@ Item {
             }
         };
 
-        var lineCandidates = nearestLines(position, true)
-            .map(replaceItemByIdentifier("line"));
+
         var pointCandidates = nearestPoints(position, undefined, true)
             .map(replaceItemByIdentifier("point"));
+        var lineCandidates = nearestLines(position, true)
+            .map(replaceItemByIdentifier("line"));
 
         // tricks to get the first item of each array or an empty
         // array if the array was empty so the resulting array's
         // length can only be [0,2].
         var candidates = [].concat(
-                    lineCandidates.slice(0,1),
-                    pointCandidates.slice(0,1)
+                    pointCandidates.slice(0,1),
+                    lineCandidates.slice(0,1)
             )
             .sort(compareForSortByDistance);
 
@@ -416,9 +441,12 @@ Item {
         }
     }
 
-    signal setPointReaction(string constraint, bool value, real identifier)
     signal pointReactionUpdated(string constraint, bool value, real identifier)
+    onPointReactionUpdated: {
+        mouseArea.points[identifier][constraint] = value
+    }
 
+    signal setPointReaction(string constraint, bool value, real identifier)
     onSetPointReaction: {
         console.log("setPointReaction(constraint: " + constraint + ", value: " + value + ", identifier: " + identifier + ")")
         var indexOf = indexOfPoint(store, identifier);
@@ -498,7 +526,7 @@ Item {
 
         var points = collection
             .map(function(x) { return { 'point' : x, 'distance' : x.distanceTo(position) } })
-            .filter(function(x) { return x.distance < Settings.minimalPointDistance })
+            .filter(function(x) { return x.distance < Settings.pointSize / 2})
             .sort(compareForSortByDistance)
 
         if(!keepPosition) {
@@ -564,7 +592,7 @@ Item {
 
         var lines = store.lines
             .map(function(x) { return { 'line': x, 'distance': distanceToSegment(position, x.startPoint.start, x.endPoint.start) } })
-            .filter(function(x) { return x.distance < Settings.minimalPointDistance })
+            .filter(function(x) { return x.distance < Settings.constructionLineWidth / 2.0})
             .sort(compareForSortByDistance);
 
         if(!keepPosition) {
@@ -684,9 +712,13 @@ Item {
     }
 
     signal setBackground(string url);
-
     onSetBackground: {
-        updateStore(_.assign({}, store, { 'background': { 'set': true, 'url': url }}));
+        updateStore(_.assign({}, store, { 'background': {'set': true, 'url': url }}));
+    }
+
+    signal enableBackground(bool set);
+    onEnableBackground: {
+        updateStore(_.assign({}, store, { 'background': {'set': set, 'url': this.getBackground() }}));
     }
 
     function isBackgroundSet() {
@@ -755,8 +787,36 @@ Item {
 
     // Store functions
     function updateStore(newStore) {
-        //history.push(store);
+        history.push(store);
         store = newStore;
+        undoneActions = [];
+        Settings.canUndo = true;
+        Settings.canRedo = false;
+    }
+
+    function undo(){
+        if (Settings.canUndo) {
+            undoneActions.push(store);
+            store = history.pop();
+            console.log(store)
+            Settings.canRedo = undoneActions.length > 0;
+        } else {
+            console.log("Can't undo");
+        }
+    }
+
+    function redo(){
+        if (Settings.canRedo) {
+            history.push(store);
+            store = undoneActions.pop();
+            Settings.canUndo = history.length > 0;
+        } else {
+            console.log("Can't redo");
+        }
+    }
+
+    function canRedo(){
+        return undoneActions.length > 0;
     }
 
     function getLines() {
