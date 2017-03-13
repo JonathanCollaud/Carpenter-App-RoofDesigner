@@ -21,7 +21,7 @@ MenuBar {
         title: "File"
         MenuItem {
             text: "New sketch"
-            shortcut: "N"
+            shortcut: Settings.shortcutNewSketch
             onTriggered: {
                 if(QtMultimedia.availableCameras.length === 0) {
                     message.displayErrorMessage("No camera available");
@@ -34,7 +34,7 @@ MenuBar {
         }
         MenuItem {
             text: "Open a sketch"
-            shortcut: "O"
+            shortcut: Settings.shortcutOpenSketch
             onTriggered: {
                 fileDialogLoader.source = "OpenFileDialog.qml"
             }
@@ -42,7 +42,7 @@ MenuBar {
         MenuSeparator {}
         MenuItem {
             text: "Save the sketch"
-            shortcut: "S"
+            shortcut: Settings.shortcutSaveSketch
             onTriggered: {
                 fileDialogLoader.source = "SaveFileDialog.qml"
             }
@@ -51,7 +51,7 @@ MenuBar {
         }
         MenuItem {
             text: "Export as 3D"
-            shortcut: "E"
+            shortcut: Settings.shortcutExport3D
             onTriggered: {
                 var basename=new Date().toLocaleString(Qt.locale(),"dMyyhms");
 
@@ -83,7 +83,7 @@ MenuBar {
         title: "Edit"
         MenuItem {
             text: "Undo"
-            shortcut: "Z"
+            shortcut: Settings.shortcutUndo
             enabled: Settings.canUndo
             onTriggered: {
                 sketch.undo()
@@ -91,7 +91,7 @@ MenuBar {
         }
         MenuItem {
             text: "Redo"
-            shortcut: "Y"
+            shortcut: Settings.shortcutRedo
             enabled: Settings.canRedo
             onTriggered: {
                 sketch.redo()
@@ -100,28 +100,28 @@ MenuBar {
         MenuSeparator {}
         MenuItem {
             text: "Select"
-            shortcut: "C"
+            shortcut: Settings.shortcutSelectTool
             onTriggered: {
                 sketchScreenLoader.item.changeTool("SelectTool", "select from key")
             }
         }
         MenuItem {
             text: "Insert"
-            shortcut: "I"
+            shortcut: Settings.shortcutInsertTool
             onTriggered: {
                 sketchScreenLoader.item.changeTool("InsertTool", "insert from key")
             }
         }
         MenuItem {
             text: "Move"
-            shortcut: "M"
+            shortcut: Settings.shortcutMoveTool
             onTriggered: {
                 sketchScreenLoader.item.changeTool("MoveTool", "move from key")
             }
         }
         MenuItem {
             text: "Delete"
-            shortcut: "D"
+            shortcut: Settings.shortcutDeleteTool
             onTriggered: {
                 sketchScreenLoader.item.changeTool("DeleteTool", "delete from key")
             }
@@ -132,6 +132,7 @@ MenuBar {
         title: "View"
         MenuItem {
             text: "Display background"
+            shortcut: Settings.shortcutDislplayBackground
             checkable: true
             checked: sketch.isBackgroundSet()
             onTriggered: {
@@ -140,6 +141,7 @@ MenuBar {
         }
         MenuItem {
             text: "Display grid"
+            shortcut: Settings.shortcutDislplayGrid
             checkable: true
             checked: Settings.backgroundGridEnable
             onTriggered: {
@@ -148,6 +150,7 @@ MenuBar {
         }
         MenuItem {
             text: "Display help tip"
+            shortcut: Settings.shortcutDislplayHelpTip
             checkable: true
             checked: Settings.helpTipEnable
             onTriggered: {
@@ -156,6 +159,7 @@ MenuBar {
         }
         MenuItem {
             text: "Display ruler"
+            shortcut: Settings.shortcutDislplayRuler
             checkable: true
             checked: Settings.rulerEnable
             onTriggered: {
@@ -169,6 +173,7 @@ MenuBar {
 
         MenuItem {
             text: "Login"
+            shortcut: Settings.shortcutLogin
             onTriggered: {
                 loginFormLoader.source = "qrc:/LoginForm.qml"
                 sketchScreenLoader.source = ""
@@ -177,6 +182,7 @@ MenuBar {
 
         MenuItem {
             text: "Back to Welcome Screen"
+            shortcut: Settings.shortcutWelcomeScreen
             onTriggered: {
                 welcomeScreenLoader.source = "qrc:/WelcomeScreen.qml"
                 sketchScreenLoader.source = ""
@@ -198,6 +204,7 @@ MenuBar {
 
         MenuItem {
             text: "Apply constraints"
+            shortcut: Settings.shortcutApplyConstraints
             onTriggered: {
                 var solveResult = mouseArea.constraintsSolver.solve()
                 console.log("solveResult: ", solveResult);

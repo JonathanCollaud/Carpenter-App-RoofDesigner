@@ -112,7 +112,7 @@ Rectangle {
         id: backgroundgrid
         anchors.fill: parent
         fillMode: Image.Tile
-        opacity: 0.42
+        opacity: 0.42 //app doesn't work if defined in Settings
         source: Settings.backgroundGridEnable? "pictures/background_grid.png" : ""
     }
 

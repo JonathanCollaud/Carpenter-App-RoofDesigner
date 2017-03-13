@@ -4,8 +4,11 @@ import QtQuick.Dialogs 1.0
 FileDialog {
     id: openFileDialog
     title: "Please choose a file"
-    folder: shortcuts.home
+    folder: shortcuts.desktop
     nameFilters: [ "Carpenter files (*.obj, *.carp)" ]
+
+    property var sketchScreenLoader
+    property var sketch: sketchScreenLoader.item.sketch
 
     onAccepted: {
         console.log("You've openned: " + openFileDialog.fileUrls)

@@ -14,16 +14,14 @@ FileDialog {
     property var sketch: sketchScreenLoader.item.sketch
 
     onAccepted: {
-        console.log("currently saving...")
-        var basename=new Date().toLocaleString(Qt.locale(),"dMyyhms");
+        var basename = "sketch_" + new Date().toLocaleString(Qt.locale(),"dd.MM.yyyy_hhmmss");
 
-        var staticsSaveResult = staticsExporter.saveFile(basename, Settings.defaultCaptureImagePath, Qt.size(mainForm.width,mainForm.height), fileUrl);
-        console.log("staticsSaveResult", staticsSaveResult);
+        var staticsSaveResult = staticsExporter.saveFile(basename, sketch.getBackground(), Qt.size(mainForm.width,mainForm.height), fileUrl);
 
         if(staticsSaveResult !== true) {
             message.displayErrorMessage("Text file save failed: " + staticsSaveResult)
         } else {
-            message.displaySuccessMessage("save succeed")
+            message.displaySuccessMessage("Saved")
             console.log("You've saved the sketch in: " + saveFileDialog.fileUrl)
         }
 

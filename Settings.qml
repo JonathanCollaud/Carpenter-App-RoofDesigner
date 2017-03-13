@@ -57,4 +57,22 @@ QtObject {
 
     property bool canUndo: false
     property bool canRedo: false
+
+    readonly property string shortcutSelectTool: " "
+    readonly property string shortcutDislplayBackground: "B"
+    readonly property string shortcutApplyConstraints: "C"
+    readonly property string shortcutDeleteTool: "D"
+    readonly property string shortcutExport3D: "E"
+    readonly property string shortcutDislplayGrid: "G"
+    readonly property string shortcutDislplayHelpTip: "H"
+    readonly property string shortcutInsertTool: "I"
+    readonly property string shortcutLogin: "L"
+    readonly property string shortcutMoveTool: "M"
+    readonly property string shortcutNewSketch: "N"
+    readonly property string shortcutOpenSketch: "O"
+    readonly property string shortcutDislplayRuler: "R"
+    readonly property string shortcutSaveSketch: "S"
+    readonly property string shortcutWelcomeScreen: "W"
+    readonly property string shortcutRedo: "Y"
+    readonly property string shortcutUndo: "Z"
 }

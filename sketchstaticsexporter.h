@@ -33,8 +33,8 @@ public:
 public slots:
     void setSketch(QObject *sketch);
     QObject* getSketch();
-    QVariant exportToFile(QString basename, QString backgroundImagePath, QSize appSize, QString path=QString());
-    Q_INVOKABLE QVariant saveFile(QString basename, QString backgroundImagePath, QSize appSize , QString path);
+    QVariant saveFile(QString basename, QString backgroundImagePath, QSize appSize, QString path = QString());
+    QVariant exportToFile(QString basename, QString backgroundImagePath, QSize appSize , QString path = QString());
 private:
     QObject *sketch;
     QString idToLetter[26];
