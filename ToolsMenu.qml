@@ -60,7 +60,7 @@ Rectangle {
         }
     }
 
-    MenuItem{
+    CustomMenuItem{
         id: menuItems
     }
 }

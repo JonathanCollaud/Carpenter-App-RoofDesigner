@@ -10,9 +10,7 @@
         <file>InsertLine.qml</file>
         <file>fonts/Material-Design-Iconic-Font.ttf</file>
         <file>fonts/FontAwesome.otf</file>
-        <file>MenuItem.qml</file>
         <file>ToolsMenu.qml</file>
-        <file>MenuBar.qml</file>
         <file>IntermediatePoint.qml</file>
         <file>Sketch.qml</file>
         <file>main.cpp</file>
@@ -36,6 +34,8 @@
         <file>pictures/background_grid.png</file>
         <file>OpenFileDialog.qml</file>
         <file>SaveFileDialog.qml</file>
+        <file>CustomMenuItem.qml</file>
+        <file>TopMenuBar.qml</file>
     </qresource>
     <qresource prefix="/tools">
         <file>tools/MoveTool.js</file>

@@ -17,7 +17,7 @@ FileDialog {
         console.log("currently saving...")
         var basename=new Date().toLocaleString(Qt.locale(),"dMyyhms");
 
-        var staticsSaveResult = staticsExporter.saveFile(basename, Settings.defaultCaptureImagePath, Qt.size(mainForm.width,mainForm.height), fileUrl);
+        var staticsSaveResult = staticsExporter.saveFile(basename, Settings.defaultCaptureImagePath, Qt.size(window.width, window.height), fileUrl);
         console.log("staticsSaveResult", staticsSaveResult);
 
         if(staticsSaveResult !== true) {

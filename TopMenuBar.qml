@@ -14,12 +14,12 @@ ToolBar {
         anchors.fill: parent
         ToolButton{
             text: "File"
+            anchors.left: parent.left
+            anchors.right: topMenuSeparator1.left
             onClicked: fileMenu.open()
             Menu {
                 id:fileMenu
                 title: "File"
-                y:parent.height
-                width: save_skecth_menu_item.implicitWidth
                 MenuItem {
                     text: "New sketch"
                     onTriggered: {
@@ -77,15 +77,16 @@ ToolBar {
                 }
             }
         }
-        ToolSeparator{}
+        ToolSeparator{ id: topMenuSeparator1}
         ToolButton{
             text:"Edit"
             onClicked: editMenu.open()
+            anchors.left: topMenuSeparator1.right
+            anchors.right: topMenuSeparator2.left
             Menu {
                 id:editMenu
                 title: "Edit"
                 y:parent.height
-                width: insert_menu_item.implicitWidth
                 MenuItem {
                     text: "Undo"
                     enabled: Settings.canUndo
@@ -128,15 +129,16 @@ ToolBar {
                 }
             }
         }
-        ToolSeparator{}
+        ToolSeparator{ id: topMenuSeparator2}
         ToolButton{
             text:"View"
             onClicked: textMenu.open()
+            anchors.left: topMenuSeparator2.right
+            anchors.right: topMenuSeparator3.left
             Menu {
                 id:textMenu
                 title: "View"
                 y:parent.height
-                width: display_background_menu_item.implicitWidth
                 MenuItem {
                     id:display_background_menu_item
                     text: "Display background"
@@ -172,14 +174,15 @@ ToolBar {
                 }
             }
         }
-        ToolSeparator{}
+        ToolSeparator{ id: topMenuSeparator3}
         ToolButton{
             text:"Old Stuff"
             onClicked: oldstuffMenu.open()
+            anchors.left: topMenuSeparator3.right
+            anchors.right: parent.right
             Menu {
                 id:oldstuffMenu
                 title: "Old stuff"
-                y:parent.height
                 MenuItem {
                     text: "Login"
                     onTriggered: {
