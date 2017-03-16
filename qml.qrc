@@ -12,7 +12,6 @@
         <file>fonts/FontAwesome.otf</file>
         <file>MenuItem.qml</file>
         <file>ToolsMenu.qml</file>
-        <file>MenuBar.qml</file>
         <file>IntermediatePoint.qml</file>
         <file>Sketch.qml</file>
         <file>main.cpp</file>
