@@ -58,10 +58,6 @@ Rectangle {
 
                 property bool wasFocus: false;
 
-                Component.onCompleted: {
-                    displayKeyboard.registerTextField(widthEditField)
-                }
-
                 onFocusChanged: {
                     if(focus && !wasFocus) {
                         gotFocus(widthEditField)

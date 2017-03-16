@@ -15,6 +15,7 @@ import SketchStaticsExporter 1.0
 import RealtoExporter 1.0
 
 QQ2.ApplicationWindow {
+    id: window
     visible: true
     width: Settings.appWidth
     height: Settings.appHeight

@@ -16,7 +16,12 @@ FileDialog {
     onAccepted: {
         var basename = "sketch_" + new Date().toLocaleString(Qt.locale(),"dd.MM.yyyy_hhmmss");
 
+<<<<<<< HEAD
         var staticsSaveResult = staticsExporter.saveFile(basename, sketch.getBackground(), Qt.size(mainForm.width,mainForm.height), fileUrl);
+=======
+        var staticsSaveResult = staticsExporter.saveFile(basename, Settings.defaultCaptureImagePath, Qt.size(window.width, window.height), fileUrl);
+        console.log("staticsSaveResult", staticsSaveResult);
+>>>>>>> MenuBar
 
         if(staticsSaveResult !== true) {
             message.displayErrorMessage("Text file save failed: " + staticsSaveResult)
